@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+
+   <constant name="struts.action.extension" value="action" />
+
+   <constant name="struts.i18n.encoding" value="UTF-8" />
+
+    <package name="base" extends="struts-default" namespace="/">
+
+        <interceptors>
+            <interceptor name="login"  class="interceptor.UserLoginInterceptor"/>
+            <interceptor-stack name="userLoginInterceptor">
+                <interceptor-ref name="login"/>
+                <interceptor-ref name="defaultStack"/>
+            </interceptor-stack>
+
+            <interceptor name="manager"  class="interceptor.ManagerLoginInterceptor"/>
+            <interceptor-stack name="managerLoginInterceptor">
+                <interceptor-ref name="manager"/>
+                <interceptor-ref name="defaultStack"/>
+            </interceptor-stack>
+        </interceptors>
+
+        <global-results>
+            <result name="login">/login.jsp</result>
+            <result name="result">/result.jsp</result>
+        </global-results>
+
+        <action name="header" class="action.BaseAction" method="header">
+            <result name="header">/inc/head.jsp</result>
+        </action>
+
+        <action name="user_*" class="action.UserAction" method="{1}">
+            <result name="reg">/reg.jsp</result>
+            <result name="reg_success">/reg_success.jsp</result>
+            <result name="manager" type="redirect">/usermanager_list.action?role=0</result>
+            <result name="success" type="redirect">/kaoshi_etitlelist.action</result>
+            <result name="modifyPass">/user_modify.jsp</result>
+            <result name="useredit">/user_edit.jsp</result>
+        </action>
+
+        <action name="usermanager_*" class="action.UserManagerAction" method="{1}">
+            <interceptor-ref name="managerLoginInterceptor"/>
+            <result name="userlist">/manager/user_list.jsp</result>
+        </action>
+
+        <action name="etitlemanager_*" class="action.EtitleManagerAction" method="{1}">
+            <interceptor-ref name="managerLoginInterceptor"/>
+            <result name="edit">/manager/etitle_edit.jsp</result>
+            <result name="list">/manager/etitle_list.jsp</result>
+            <result name="success" type="redirect">/etitlemanager_list.action</result>
+        </action>
+
+        <action name="qamanager_*" class="action.QaManagerAction" method="{1}">
+            <interceptor-ref name="managerLoginInterceptor"/>
+            <result name="add">/manager/qa_add.jsp</result>
+            <result name="edit">/manager/qa_edit.jsp</result>
+            <result name="list">/manager/qa_list.jsp</result>
+            <result name="success" type="redirect">/qamanager_list.action?eid=${eid}</result>
+        </action>
+
+        <action name="score_*" class="action.ScoreAction" method="{1}">
+            <result name="add">/manager/qa_add.jsp</result>
+            <result name="list">/manager/score_list.jsp</result>
+            <result name="mylist">/score_mylist.jsp</result>
+        </action>
+
+        <action name="kaoshi_*" class="action.KaoshiAction" method="{1}">
+            <interceptor-ref name="userLoginInterceptor"/>
+            <result name="etitlelist">/etitle_list.jsp</result>
+            <result name="qalist">/qa_list.jsp</result>
+        </action>
+    </package>
+
+</struts>
